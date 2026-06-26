@@ -1,0 +1,35 @@
+name: Compile picobook OS Kernel
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install ESP32 Platform
+        run: |
+          arduino-cli core update-index --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core install esp32:esp32 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+
+      - name: Install LovyanGFX Library
+        run: arduino-cli lib install LovyanGFX
+
+      - name: Compile Firmware
+        run: |
+          arduino-cli compile --fqbn esp32:esp32:esp32s3 \
+            --build-property "build.partitions=partitions" \
+            --build-property "upload.maximum_size=1966080" \
+            --output-dir ./build .
+
+      - name: Upload Binaries to Browser
+        uses: actions/upload-artifact@v4
+        with:
+          name: picobook-kernel-bins
+          path: ./build/
