@@ -37,7 +37,7 @@ jobs:
         run: |
           arduino-cli compile --fqbn esp32:esp32:esp32s3 \
             --build-property "build.partitions=partitions" \
-            --build-property "upload.maximum_size=1966080" \
+            --build-property "upload.maximum_size=2031616" \
             --build-property "build.usb_cdc=1" \
             --output-dir ./build ./pb-os
 
