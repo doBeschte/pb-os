@@ -263,7 +263,7 @@ void prepareHardwareForShutdown() {
 void executeSafeShutdown() {
     prepareHardwareForShutdown();
     // Wakeup über CardKB (I2C SDA Pin 1) konfigurieren vor Deep Sleep
-    esp_deep_sleep_enable_gpio_wakeup(1ULL << 1, ESP_GPIO_WAKEUP_GPIO_LOW);
+    esp_sleep_enable_gpio_wakeup(1ULL << 1, ESP_GPIO_WAKEUP_LOW);
     esp_deep_sleep_start(); // MH-CD42 schaltet nach 45 Sek ab
 }
 
