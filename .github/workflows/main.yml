@@ -21,12 +21,25 @@ jobs:
       - name: Install LovyanGFX Library
         run: arduino-cli lib install LovyanGFX
 
+      - name: Prepare Arduino Folder Structure
+        run: |
+          mkdir -p pb-os
+          if [ -f sketch.ino ]; then
+            mv sketch.ino pb-os/pb-os.ino
+          elif [ -f pb-os.ino ]; then
+            mv pb-os.ino pb-os/
+          fi
+          if [ -f partitions.csv ]; then
+            mv partitions.csv pb-os/
+          fi
+
       - name: Compile Firmware
         run: |
           arduino-cli compile --fqbn esp32:esp32:esp32s3 \
             --build-property "build.partitions=partitions" \
             --build-property "upload.maximum_size=1966080" \
-            --output-dir ./build sketch.ino
+            --build-property "build.usb_cdc=1" \
+            --output-dir ./build ./pb-os
 
       - name: Upload Binaries to Browser
         uses: actions/upload-artifact@v4
